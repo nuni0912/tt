@@ -70,4 +70,32 @@
       你的生活風格偏好：
       <br>
       <button onclick="answer('J')">有規劃、有條理 📅</button>
-      <button onclick="answer('P')">隨興
+      <button onclick="answer('P')">隨興、靈活 🌀</button>
+    </div>
+  </div>
+  <div id="result"></div>
+
+  <script>
+    const answers = [];
+    let current = 1;
+
+    function answer(letter) {
+      answers.push(letter);
+      if (current < 4) {
+        document.getElementById(`q${current}`).style.display = "none";
+        current++;
+        document.getElementById(`q${current}`).style.display = "block";
+      } else {
+        document.getElementById(`q${current}`).style.display = "none";
+        showResult();
+      }
+    }
+
+    function showResult() {
+      const mbti = answers.join('');
+      const result = document.getElementById('result');
+      result.innerHTML = `🎉 你的 MBTI 是：<strong>${mbti}</strong>！<br>（非正式測驗，僅供娛樂哦～）`;
+    }
+  </script>
+</body>
+</html>

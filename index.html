@@ -2,41 +2,72 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>可愛的網頁</title>
+  <title>可愛 MBTI 小遊戲</title>
   <style>
     body {
-      background-color: #ffeef8;
+      background-color: #fff0f5;
       font-family: 'Comic Sans MS', cursive, sans-serif;
       text-align: center;
-      padding: 100px;
-      color: #ff69b4;
+      padding: 50px;
+      color: #d46aa0;
     }
 
     h1 {
-      font-size: 3em;
-      margin-bottom: 40px;
+      font-size: 2.5em;
+      margin-bottom: 30px;
     }
 
-    a {
-      display: inline-block;
-      padding: 15px 30px;
+    .question {
+      margin-bottom: 40px;
+      font-size: 1.2em;
+    }
+
+    button {
       background-color: #ffb6c1;
       color: white;
-      text-decoration: none;
-      border-radius: 30px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      font-size: 1.2em;
+      border: none;
+      padding: 12px 24px;
+      margin: 10px;
+      border-radius: 25px;
+      font-size: 1em;
+      cursor: pointer;
       transition: background-color 0.3s ease;
     }
 
-    a:hover {
-      background-color: #ff88aa;
+    button:hover {
+      background-color: #ff69b4;
+    }
+
+    #result {
+      margin-top: 40px;
+      font-size: 1.5em;
+      color: #c71585;
     }
   </style>
 </head>
 <body>
-  <h1>歡迎來到可愛的頁面！🌸</h1>
-  <a href="test.html">點我去 test.html！💗</a>
-</body>
-</html>
+  <h1>✨ MBTI 小遊戲 ✨</h1>
+  <div id="quiz">
+    <div class="question" id="q1">
+      你比較喜歡：
+      <br>
+      <button onclick="answer('E')">參加熱鬧派對 🎉</button>
+      <button onclick="answer('I')">獨自閱讀或聽音樂 📚</button>
+    </div>
+    <div class="question" id="q2" style="display:none;">
+      你傾向相信：
+      <br>
+      <button onclick="answer('S')">具體的事實和經驗 🔍</button>
+      <button onclick="answer('N')">靈感與直覺 🌟</button>
+    </div>
+    <div class="question" id="q3" style="display:none;">
+      做決定時你更看重：
+      <br>
+      <button onclick="answer('T')">邏輯與客觀性 🤖</button>
+      <button onclick="answer('F')">感受與人際關係 💞</button>
+    </div>
+    <div class="question" id="q4" style="display:none;">
+      你的生活風格偏好：
+      <br>
+      <button onclick="answer('J')">有規劃、有條理 📅</button>
+      <button onclick="answer('P')">隨興

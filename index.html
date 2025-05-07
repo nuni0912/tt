@@ -2,100 +2,84 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <title>街友生存模擬遊戲</title>
+  <title>街頭生存遊戲 - Day 1</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <style>
-    body { font-family: sans-serif; background: #f4f4f4; padding: 20px; }
-    #game { background: white; padding: 20px; max-width: 600px; margin: auto; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    .stats { margin-bottom: 20px; }
-    .stats div { margin: 5px 0; }
-    button { padding: 10px; margin: 5px 0; width: 100%; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: "Noto Serif TC", serif;
+      overflow: hidden;
+    }
+
+    body {
+      background: url('day1.png') no-repeat center center;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .choice-container {
+      width: 100%;
+      padding: 20px 10px;
+      background: rgba(255, 255, 255, 0.8);
+      text-align: center;
+    }
+
+    .choice-button {
+      display: block;
+      width: 90%;
+      max-width: 300px;
+      margin: 10px auto;
+      padding: 15px 10px;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .enter {
+      background-color: #5d4037;
+      color: #ffecb3;
+    }
+
+    .stay {
+      background-color: #37474f;
+      color: #b3e5fc;
+    }
+
+    @media screen and (max-width: 600px) {
+      .choice-button {
+        font-size: 16px;
+        padding: 12px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div id="game">
-    <h1>街友生存模擬遊戲</h1>
-    <div class="stats">
-      <div>財富：<span id="wealth">50</span></div>
-      <div>健康：<span id="health">50</span></div>
-      <div>心情：<span id="mood">50</span></div>
-    </div>
-    <div id="events"></div>
-    <button onclick="doAction('drink')">偷喝酒（+心情 -健康）</button>
-    <button onclick="doAction('work')">打零工（+財富 -健康）</button>
-    <button onclick="doAction('rest')">休息（+健康 -財富）</button>
-    <button onclick="doAction('argue')">與管理員爭執（-心情）</button>
-    <button onclick="doAction('activity')">參加團體活動（+心情 -自由感）</button>
-    <div id="message" style="margin-top:20px; font-weight: bold;"></div>
+  <div class="choice-container">
+    <button class="choice-button enter" onclick="choose('in')">
+      入住機構<br><small>你倉有個安身之處</small>
+    </button>
+    <button class="choice-button stay" onclick="choose('out')">
+      不入住<br><small>你將繼續處宿街頭</small>
+    </button>
   </div>
 
   <script>
-    let wealth = 50;
-    let health = 50;
-    let mood = 50;
-
-    function updateStats() {
-      document.getElementById('wealth').innerText = wealth;
-      document.getElementById('health').innerText = health;
-      document.getElementById('mood').innerText = mood;
-    }
-
-    function checkEnd() {
-      if (wealth >= 100 && health >= 100) {
-        document.getElementById('message').innerText = "🎉 恭喜你脫遊成功，邁向自立生活！";
-        disableButtons();
-      } else if (mood <= 0) {
-        document.getElementById('message').innerText = "😢 你因為心情低落離開了安置機構...";
-        disableButtons();
+    function choose(option) {
+      if (option === 'in') {
+        window.location.href = 'day2-in.html';
+      } else {
+        window.location.href = 'day2-out.html';
       }
     }
-
-    function disableButtons() {
-      const buttons = document.querySelectorAll('button');
-      buttons.forEach(btn => btn.disabled = true);
-    }
-
-    function doAction(action) {
-      let eventText = "";
-
-      switch(action) {
-        case 'drink':
-          mood += 10;
-          health -= 15;
-          eventText = "你偷喝了酒，心情變好但健康惡化了。";
-          break;
-        case 'work':
-          wealth += 15;
-          health -= 10;
-          mood -= 5;
-          eventText = "你打了零工，賺了一些錢，但身體疲累心情略差。";
-          break;
-        case 'rest':
-          health += 15;
-          wealth -= 10;
-          eventText = "你選擇休息，健康恢復但花了一些錢。";
-          break;
-        case 'argue':
-          mood -= 20;
-          eventText = "你和管理員爭執，心情受到打擊。";
-          break;
-        case 'activity':
-          mood += 10;
-          wealth -= 5;
-          eventText = "你參加團體活動，提升心情但花了一點錢。";
-          break;
-      }
-
-      // 限制數值區間
-      wealth = Math.max(0, Math.min(wealth, 150));
-      health = Math.max(0, Math.min(health, 150));
-      mood = Math.max(0, Math.min(mood, 150));
-
-      document.getElementById('events').innerText = eventText;
-      updateStats();
-      checkEnd();
-    }
-
-    updateStats();
   </script>
 </body>
 </html>

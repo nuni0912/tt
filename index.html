@@ -101,6 +101,28 @@
       background-color: #4caf50;
       color: white;
     }
+    .end-screen {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      z-index: 4;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      animation: fadeIn 2s ease forwards;
+    }
+    .end-message {
+      background-color: rgba(0,0,0,0.6);
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      font-size: 22px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
     @keyframes fadeOut {
       to {
         opacity: 0;
@@ -132,6 +154,9 @@
       <h1>街友安置體驗</h1>
       <button class="btn" onclick="startGame()">開始遊戲</button>
     </div>
+
+    <!-- 結局畫面 -->
+    <div class="end-screen" id="endScreen"></div>
   </div>
 
   <script>
@@ -145,7 +170,7 @@
         ]
       },
       {
-        bg: 'day2.png',
+        bg: 'day02.png',
         speech: '你發現附近有熟悉的人在公共空間聊天，要加入嗎？',
         choices: [
           { text: '加入他們<br>你感受到社會連結', effect: 5 },
@@ -153,7 +178,7 @@
         ]
       },
       {
-        bg: 'day3.png',
+        bg: 'day03.png',
         speech: '今天氣溫驟降，是否選擇進入車站避寒？',
         choices: [
           { text: '進入車站<br>你暫時溫暖了身心', effect: 7 },
@@ -161,7 +186,7 @@
         ]
       },
       {
-        bg: 'day4.png',
+        bg: 'day04.png',
         speech: '你收到社福團體提供的食物，要接受嗎？',
         choices: [
           { text: '接受食物<br>你獲得補給與關懷', effect: 6 },
@@ -169,7 +194,7 @@
         ]
       },
       {
-        bg: 'day02.png',
+        bg: 'day05.png',
         speech: '有人邀請你參加重返社會的課程，要報名嗎？',
         choices: [
           { text: '報名參加<br>你看到新的可能', effect: 8 },
@@ -214,9 +239,15 @@
     }
 
     function showEnd() {
-      document.getElementById('speech').innerText = `遊戲結束，你的狀態為：${score}`;
-      document.getElementById('choices').innerHTML = `<button class="btn" onclick="location.reload()">重新開始</button>`;
-      document.getElementById('dayLabel').innerText = '結束';
+      const endScreen = document.getElementById('endScreen');
+      const bgImage = score >= 50 ? 'happy.png' : 'sad.png';
+      endScreen.style.backgroundImage = `url('${bgImage}')`;
+      endScreen.style.display = 'flex';
+
+      endScreen.innerHTML = `
+        <div class="end-message">遊戲結束，你的狀態為：${score}</div>
+        <button class="btn" onclick="location.reload()">重新開始</button>
+      `;
     }
   </script>
 </body>

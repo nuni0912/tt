@@ -1,84 +1,222 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <title>街頭生存遊戲 - Day 1</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>街友安置體驗</title>
   <style>
-    html, body {
+    body {
       margin: 0;
-      padding: 0;
-      height: 100%;
-      font-family: "Noto Serif TC", serif;
+      background-color: #222;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+    .game-container {
+      width: 375px;
+      height: 667px;
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
       overflow: hidden;
     }
-
-    body {
-      background: url('day1.png') no-repeat center center;
-      background-size: cover;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      align-items: center;
-    }
-
-    .choice-container {
+    .content {
+      position: absolute;
+      bottom: 40px;
       width: 100%;
-      padding: 20px 10px;
-      background: rgba(255, 255, 255, 0.8);
       text-align: center;
     }
-
-    .choice-button {
-      display: block;
-      width: 90%;
-      max-width: 300px;
-      margin: 10px auto;
-      padding: 15px 10px;
-      font-size: 18px;
-      font-weight: bold;
+    .btn {
+      margin: 10px;
+      padding: 10px 20px;
       border: none;
-      border-radius: 15px;
+      font-size: 16px;
+      border-radius: 12px;
       cursor: pointer;
-      transition: background 0.3s ease;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
     }
-
-    .enter {
-      background-color: #5d4037;
-      color: #ffecb3;
+    .btn:hover {
+      transform: scale(1.05);
     }
-
-    .stay {
-      background-color: #37474f;
-      color: #b3e5fc;
+    .progress-bar {
+      position: absolute;
+      top: 20px;
+      left: 10%;
+      width: 80%;
+      height: 12px;
+      background-color: #ddd;
+      border-radius: 10px;
+      overflow: hidden;
     }
-
-    @media screen and (max-width: 600px) {
-      .choice-button {
-        font-size: 16px;
-        padding: 12px;
+    .progress-bar-fill {
+      height: 100%;
+      background-color: #4caf50;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    .speech-bubble {
+      position: absolute;
+      bottom: 200px;
+      left: 20px;
+      right: 20px;
+      background: rgba(255,255,255,0.9);
+      padding: 10px 15px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 16px;
+      z-index: 2;
+    }
+    .day-label {
+      position: absolute;
+      top: 40px;
+      left: 20px;
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+      background-color: rgba(0,0,0,0.5);
+      padding: 5px 10px;
+      border-radius: 10px;
+    }
+    .start-screen {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: #111;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 3;
+      animation: fadeIn 1s ease forwards;
+    }
+    .start-screen h1 {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+    .start-screen .btn {
+      background-color: #4caf50;
+      color: white;
+    }
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        visibility: hidden;
+      }
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
       }
     }
   </style>
 </head>
 <body>
-  <div class="choice-container">
-    <button class="choice-button enter" onclick="choose('in')">
-      入住機構<br><small>你倉有個安身之處</small>
-    </button>
-    <button class="choice-button stay" onclick="choose('out')">
-      不入住<br><small>你將繼續處宿街頭</small>
-    </button>
+  <div class="game-container" id="game" style="background-image: url('day1.png');">
+    <div class="day-label" id="dayLabel">Day1</div>
+    <div class="progress-bar"><div class="progress-bar-fill" id="progress"></div></div>
+    <div class="speech-bubble" id="speech">社工：要不要入住安置機構？</div>
+    <div class="content" id="choices">
+      <button class="btn" onclick="nextDay(10)">入住機構<br>你倖有個安身之處</button>
+      <button class="btn" onclick="nextDay(-5)">不入住<br>你將繼續露宿街頭</button>
+    </div>
+
+    <!-- 開場首頁 -->
+    <div class="start-screen" id="startScreen">
+      <h1>街友安置體驗</h1>
+      <button class="btn" onclick="startGame()">開始遊戲</button>
+    </div>
   </div>
 
   <script>
-    function choose(option) {
-      if (option === 'in') {
-        window.location.href = 'day2-in.html';
-      } else {
-        window.location.href = 'day2-out.html';
+    const days = [
+      {
+        bg: 'Day1.png',
+        speech: '社工：要不要入住安置機構？',
+        choices: [
+          { text: '入住機構<br>你倖有個安身之處', effect: 10 },
+          { text: '不入住<br>你將繼續露宿街頭', effect: -5 }
+        ]
+      },
+      {
+        bg: 'Day2.png',
+        speech: '你發現附近有熟悉的人在公共空間聊天，要加入嗎？',
+        choices: [
+          { text: '加入他們<br>你感受到社會連結', effect: 5 },
+          { text: '離開現場<br>你選擇獨處與沉默', effect: -3 }
+        ]
+      },
+      {
+        bg: 'Day3.png',
+        speech: '今天氣溫驟降，是否選擇進入車站避寒？',
+        choices: [
+          { text: '進入車站<br>你暫時溫暖了身心', effect: 7 },
+          { text: '不進去<br>你忍受寒風中的夜晚', effect: -4 }
+        ]
+      },
+      {
+        bg: 'Day4.png',
+        speech: '你收到社福團體提供的食物，要接受嗎？',
+        choices: [
+          { text: '接受食物<br>你獲得補給與關懷', effect: 6 },
+          { text: '婉拒善意<br>你選擇維持獨立', effect: -2 }
+        ]
+      },
+      {
+        bg: 'Day5.png',
+        speech: '有人邀請你參加重返社會的課程，要報名嗎？',
+        choices: [
+          { text: '報名參加<br>你看到新的可能', effect: 8 },
+          { text: '拒絕邀約<br>你感到迷惘與不安', effect: -5 }
+        ]
       }
+    ];
+
+    let currentDay = 0;
+    let score = 50;
+
+    function startGame() {
+      const screen = document.getElementById('startScreen');
+      screen.style.animation = 'fadeOut 1s ease forwards';
+      setTimeout(() => screen.style.display = 'none', 1000);
+    }
+
+    function nextDay(change) {
+      score += change;
+      currentDay++;
+      updateProgress();
+
+      if (currentDay >= days.length) {
+        showEnd();
+        return;
+      }
+
+      const day = days[currentDay];
+      document.getElementById('game').style.backgroundImage = `url('${day.bg}')`;
+      document.getElementById('speech').innerText = day.speech;
+      document.getElementById('dayLabel').innerText = `Day${currentDay + 1}`;
+
+      const choicesHtml = day.choices.map(choice =>
+        `<button class="btn" onclick="nextDay(${choice.effect})">${choice.text}</button>`
+      ).join('');
+      document.getElementById('choices').innerHTML = choicesHtml;
+    }
+
+    function updateProgress() {
+      const percent = Math.min(Math.max(score, 0), 100);
+      document.getElementById('progress').style.width = percent + '%';
+    }
+
+    function showEnd() {
+      document.getElementById('speech').innerText = `遊戲結束，你的狀態為：${score}`;
+      document.getElementById('choices').innerHTML = `<button class="btn" onclick="location.reload()">重新開始</button>`;
+      document.getElementById('dayLabel').innerText = '結束';
     }
   </script>
 </body>
